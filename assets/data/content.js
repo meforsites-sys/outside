@@ -11,7 +11,7 @@ window.APP_META = {
  "hard": 27,
  "minWords": 86,
  "maxWords": 243,
- "version": "1.0",
+ "version": "1.2",
  "author": "الأستاذ علي معز الشلاه",
  "audioVoice": "ريان · إنجليزي بريطاني"
 };

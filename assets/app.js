@@ -172,6 +172,8 @@
     }
     if (h === 'about') return { name: 'about' };
     if (h === 'guide') return { name: 'guide' };
+    if (h === 'contents') return { name: 'contents' };
+    if (h === 'me') return { name: 'me' };
     return { name: 'home' };
   }
 
@@ -199,6 +201,14 @@
     } else if (r.name === 'guide') {
       state.route = 'guide';
       renderGuide();
+      scrollTop(false);
+    } else if (r.name === 'contents') {
+      state.route = 'contents';
+      renderContents();
+      scrollTop(false);
+    } else if (r.name === 'me') {
+      state.route = 'me';
+      renderMe();
       scrollTop(false);
     } else {
       state.route = 'home';
@@ -247,6 +257,7 @@
               '</div>' +
             '</div>' +
             '<div class="hero-actions">' +
+              '<button class="icon-btn gold" id="contentsBtn" aria-label="محتويات التطبيق" title="محتويات التطبيق">' + ICONS.text + '</button>' +
               '<button class="icon-btn gold" id="aboutBtn" aria-label="عن التطبيق" title="عن التطبيق">' + ICONS.info + '</button>' +
             '</div>' +
           '</div>' +
@@ -373,6 +384,8 @@
         '<div>إعداد وتنسيق: <strong>الأستاذ علي معز الشلاه</strong></div>' +
         '<div>القطع الخارجية الوزارية · 2014 — 2026 · 78 قطعة و82 دورة امتحانية</div>' +
         '<a class="guide-entry" href="#/guide">📘 دليل حل القطعة الخارجية الوزارية</a>' +
+        '<a class="guide-entry" href="#/contents">📋 محتويات التطبيق</a>' +
+        '<a class="guide-entry" href="#/me">👤 عني · الأستاذ علي معز الشلاح</a>' +
         '<div class="latin">ALI MOEZ AL-SHALLAH · ENGLISH DEPARTMENT</div>' +
       '</footer>';
   }
@@ -423,6 +436,11 @@
       });
     }
     var ab = document.getElementById('aboutBtn');
+    var cb = document.getElementById('contentsBtn');
+    if (cb) cb.addEventListener('click', function () {
+      state.homeScroll = window.scrollY || 0;
+      navigate('#/contents');
+    });
     if (ab) ab.addEventListener('click', function () {
       state.homeScroll = window.scrollY || 0;
       navigate('#/about');
@@ -956,6 +974,82 @@
       '<section class="guide-section"><div class="guide-section-head"><span>06</span><div><h2>قائمة المراجعة</h2><p>قبل تسليم الإجابة</p></div></div><div class="guide-checks">' + ['أجبت عن العدد المطلوب من الفروع.','كل إجابة مستندة إلى معنى القطعة.','بدأت بالفاعل عند الحاجة.','راجعت الزمن وصيغة الفعل والضمير.','راجعت الاختيارات وعبارات True / False.','العنوان يعبّر عن الفكرة الرئيسية.'].map(function(x){return '<label><input type="checkbox"><span>'+x+'</span></label>';}).join('') + '</div></section>' +
       '<section class="guide-section guide-index"><div class="guide-section-head"><span>↗</span><div><h2>فهرس القطع المرجعي</h2><p>اختر أي قطعة للانتقال إليها مباشرة</p></div></div><div class="guide-ref-list">'+refs+'</div></section>' +
       '<div class="guide-sign">إعداد وتنسيق<br><strong>الأستاذ علي معز الشلاه</strong><small>ALI MOEZ AL-SHALLAH · ENGLISH DEPARTMENT</small></div><a class="back-home" href="#/">' + ICONS.grid + ' العودة إلى فهرس القطع</a></main>';
+    hideBoot();
+  }
+
+  /* ================= CONTENTS ================= */
+  function renderContents() {
+    document.title = 'محتويات التطبيق — القطع الخارجية';
+    var levels = [
+      { n: (META.easy || 26), label: 'قطعة سهلة', en: 'EASY' },
+      { n: (META.medium || 25), label: 'قطعة متوسطة', en: 'MEDIUM' },
+      { n: (META.hard || 27), label: 'قطعة صعبة', en: 'HARD' }
+    ];
+    app.innerHTML = '' +
+      '<header class="contents-hero">' +
+        '<div class="top-nav"><a class="icon-btn" href="#/" aria-label="رجوع">' + ICONS.back + '</a><span>APP CONTENTS · v' + (META.version || '1.0') + '</span></div>' +
+        '<div class="contents-kicker">INSIDE THE APP</div>' +
+        '<h1>محتويات التطبيق</h1>' +
+        '<p>كل ما يحتويه التطبيق من قطع وأسئلة وحلول واستماع، في صفحة واحدة</p>' +
+        '<div class="contents-pills">' +
+          '<span>' + (META.total || 78) + ' قطعة</span><span>' + (META.questions || 469) + ' سؤالًا</span><span>' + (META.sessions || 82) + ' دورة</span><span>بدون إنترنت</span>' +
+        '</div>' +
+      '</header>' +
+      '<main class="contents-main">' +
+        '<section class="guide-section"><div class="guide-section-head"><span>01</span><div><h2>فهرس القطع</h2><p>جميع القطع الوزارية مرتبة من السهل إلى الصعب، سنوات ' + esc(META.years || '2014 — 2026') + '</p></div></div>' +
+          '<div class="contents-levels">' +
+            levels.map(function (l) {
+              return '<a class="contents-level" href="#/"><b>' + l.n + '</b><span>' + l.label + '</span><i>' + l.en + '</i></a>';
+            }).join('') +
+          '</div>' +
+          '<a class="contents-cta" href="#/">' + ICONS.grid + ' افتح فهرس القطع</a>' +
+        '</section>' +
+        '<section class="guide-section"><div class="guide-section-head"><span>02</span><div><h2>دليل حل القطعة</h2><p>خطوات عملية لفهم القطعة والإجابة عن أسئلتها</p></div></div><p class="contents-p">شرح مبسّط لخطة الحل في ست خطوات، وكلمات السؤال WH، وأنواع الأسئلة الشائعة، وقائمة مراجعة قبل التسليم.</p>' +
+          '<a class="contents-cta" href="#/guide">' + ICONS.book + ' افتح دليل الحل</a>' +
+        '</section>' +
+        '<section class="guide-section"><div class="guide-section-head"><span>03</span><div><h2>الاستماع الصوتي</h2><p>تسجيل صوت ' + esc(META.audioVoice || 'ريان · إنجليزي بريطاني') + ' لكل قطعة</p></div></div><ul class="guide-bullets"><li>اضغط أي كلمة في النص للانتقال إلى موقعها في التسجيل.</li><li>سرعات متعددة: 0.75× · 1× · 1.25× · 1.5× حسب مستواك.</li><li>يُحفظ اختيار السرعة تلقائيًا لجميع القطع.</li><li>يعمل دائمًا بدون إنترنت.</li></ul></section>' +
+        '<section class="guide-section"><div class="guide-section-head"><span>04</span><div><h2>الحل والترجمة بعد 10 دقائق</h2><p>تدريب حقيقي يحاكي الامتحان</p></div></div><p class="contents-p">عند فتح القطعة يُحجب الحل والترجمة، وتبدأ عدّة 10 دقائق. جاوب بنفسك أولًا، وبعد انتهاء العدّ يظهر الحل والترجمة تلقائيًا للمراجعة والمقارنة.</p></section>' +
+        '<section class="guide-section"><div class="guide-section-head"><span>05</span><div><h2>أدوات المساعدة</h2><p>أدوات صغيرة تُسهّل المراجعة</p></div></div><ul class="guide-bullets"><li>بحث فوري في عناوين القطع ونصوصها.</li><li>زر قطعة عشوائية للتدريب السريع.</li><li>تعليم الكلمة المقروء أثناء الاستماع.</li><li>تصفية القطع حسب المستوى: سهل · متوسط · صعب.</li></ul></section>' +
+        '<div class="guide-sign">إعداد وتنسيق<br><strong>' + esc(META.author || 'الأستاذ علي معز الشلاح') + '</strong><small>ALI MOEZ AL-SHALLAH · ENGLISH DEPARTMENT</small></div>' +
+        '<a class="back-home" href="#/">' + ICONS.grid + ' العودة إلى فهرس القطع</a>' +
+      '</main>';
+    hideBoot();
+  }
+
+  /* ================= ABOUT ME ================= */
+  function renderMe() {
+    document.title = 'عني — القطع الخارجية';
+    app.innerHTML = '' +
+      '<header class="me-hero">' +
+        '<div class="top-nav"><a class="icon-btn" href="#/" aria-label="رجوع">' + ICONS.back + '</a><span>ABOUT ME</span></div>' +
+        '<img class="me-logo" src="icon512.png" alt="شعار الأستاذ علي معز الشلاح">' +
+        '<div class="me-kicker">ABOUT ME · من أنا</div>' +
+        '<h1>' + esc(META.author || 'الأستاذ علي معز الشلاح') + '</h1>' +
+        '<p>مُعِدُّ سلسلة القطع الخارجية · قسم اللغة الإنجليزية · السادس الإعدادي</p>' +
+        '<div class="latin">ALI MOEZ AL-SHALLAH · ENGLISH DEPARTMENT</div>' +
+      '</header>' +
+      '<main class="me-main">' +
+        '<section class="me-card"><h3>' + ICONS.edit + ' ماذا أُعدّ</h3>' +
+          '<p>إعداد وتنسيق القطع الخارجية الوزارية للغة الإنجليزية للسادس الإعدادي، مع ترجمة كل قطعة وحل أسئلتها، وجمعها في تطبيق واحد يعمل دون إنترنت.</p>' +
+        '</section>' +
+        '<section class="me-card"><h3>' + ICONS.book + ' سلسلة الاستعداد للامتحان الوزاري</h3>' +
+          '<div class="me-stats">' +
+            '<div class="me-stat"><b>' + (META.years || '2014 — 2026') + '</b><span>سنوات الدورات</span></div>' +
+            '<div class="me-stat"><b>' + (META.sessions || 82) + '</b><span>دورة امتحانية</span></div>' +
+            '<div class="me-stat"><b>' + (META.questions || 469) + '</b><span>سؤال محلول</span></div>' +
+            '<div class="me-stat"><b>' + (META.total || 78) + '</b><span>قطعة</span></div>' +
+          '</div>' +
+        '</section>' +
+        '<section class="me-card"><h3>' + ICONS.volume + ' التسجيل الصوتي</h3>' +
+          '<p>تسجيل صوتي لكل قطعة بصوت ' + esc(META.audioVoice || 'ريان · إنجليزي بريطاني') + '، مع تحكم كامل بالسرعة والانتقال بين الكلمات، ليساعد الطالب على تحسين نطقه وفهمه للنص.</p>' +
+        '</section>' +
+        '<section class="me-card"><h3>' + ICONS.info + ' عن الإصدار</h3>' +
+          '<p>' + esc(META.title || 'القطع الخارجية') + ' · الإصدار ' + (META.version || '1.0') + ' · ' + esc(META.subtitle || '') + '</p>' +
+          '<a class="contents-cta" href="#/contents">' + ICONS.text + ' محتويات التطبيق</a>' +
+        '</section>' +
+        '<div class="about-signature"><strong>' + esc(META.author || 'الأستاذ علي معز الشلاح') + '</strong><span>إعداد وتنسيق المحتوى</span><div class="latin">ALI MOEZ AL-SHALLAH</div></div>' +
+        '<a class="back-home" href="#/">' + ICONS.grid + ' العودة إلى فهرس القطع</a>' +
+      '</main>';
     hideBoot();
   }
 
